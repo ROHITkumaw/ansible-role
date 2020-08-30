@@ -1,0 +1,11 @@
+---
+# vars file for webserver
+
+port: 8123
+documentRoot: /var/www/rohit
+
+
+
+
+
+

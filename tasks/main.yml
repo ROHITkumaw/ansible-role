@@ -1,0 +1,37 @@
+---
+# tasks file for webserver
+
+- name: install httpd package
+  package:
+          name: "httpd"
+          state: present
+  when: ansible_distribution == "Amazon"
+  register: x
+
+- name: document root dir
+  file:
+          state: directory
+          dest: "/var/www/rohit/"
+  register: dr_dir_status
+  tags: rootdirectory
+
+- name: conf web server
+  template:
+          dest: /etc/httpd/conf.d/rohit.conf
+          src: /root/webserver/files/localconf.conf
+  when: x.rc == 0
+  notify: service httpd
+
+- name: copy webpage from url
+  get_url:
+          dest: "/var/www/rohit/"
+          url: "https://github.com/ROHITkumaw/various"
+  when: dr_dir_status.failed == false
+  tags: copyfile
+
+
+
+- name: start httpd service
+  service:
+          name: "httpd"
+          state: started
